@@ -1,0 +1,121 @@
+<template>
+	<view class="video-box" id="video-box">
+		<view>此时slider就有了问题：</view>
+		<video
+			class="video"
+			id="video"
+			src="http://wxsnsdy.tc.qq.com/105/20210/snsdyvideodownload?filekey=30280201010421301f0201690402534804102ca905ce620b1241b726bc41dcff44e00204012882540400&bizid=1023&hy=SH&fileparam=302c020101042530230204136ffd93020457e3c4ff02024ef202031e8d7f02030f42400204045a320a0201000400" 
+			:controls="false"
+			:enablePlayGesture="true"
+			objectFit="fill"  
+			@timeupdate="timeUpdate"
+		>
+				<cover-view class="video-footer" v-if="!isFullScreen" :style="{'width':screenWidth}">
+					<slider
+						block-size="12"
+						@change="sliderChange"
+						@changing="sliderChanging"
+						:step="1"
+						:value="sliderValue"
+						backgroundColor="#A8A8A8"
+						activeColor="#FFEE83"
+						block-color="#ff0"
+						
+					/>
+				</cover-view>
+		</video>
+	</view>
+</template>
+<script>
+export default {
+	props: {
+		},
+	data() {
+		return {
+			sliderValue: 0, //控制进度条slider的值，
+			videoContext: {},
+			screenWidth: 750,
+			headerWidth: 750,
+			screenHeight: 750,
+		}
+	},
+	onLoad() {
+
+	},
+	created() {
+		console.log('platformplatformplatform-------------------->', this.platform, this.listName)
+		this.videoContext = uni.createVideoContext('video');
+		this.screenWidth = uni.getSystemInfoSync().windowWidth;
+		this.headerWidth = uni.getSystemInfoSync().windowWidth;
+		this.screenHeight = uni.getSystemInfoSync().screenHeight
+	},
+	methods: {
+		//拖动进度条触发事件
+		sliderChange(e) {
+			if (this.duration) {
+				// let time = parseInt(e.detail.value / 100 * this.duration)
+				let time = e.detail.value / 100 * this.duration
+				console.log('e.detail.value / 100 * this.duration---------->', e.detail.value / 100 * this.duration)
+				this.videoContext.seek(time); //完成拖动后，计算对应时间并跳转到指定位置
+				this.sliderValue = e.detail.value
+				
+			}
+		},
+		sliderChanging(e) {
+			
+		}, 
+	}
+};
+</script>
+<style lang="scss">
+	.video-box {
+		width: 750rpx;
+		/* width: 100%; */
+	}
+	.video {
+		position: relative;
+		/* width: 100%; */
+		// margin-top: 50px;
+	}
+	// 之前的样式
+	.back-button {
+		width: 30px;
+		height: 30px;
+		align-items: center;
+		justify-content: center;
+		opacity: 0.8;
+		// margin-top: 25px;
+		margin-bottom: 70%;
+		margin-left: 15px;
+		border-radius: 50%;
+		background-color: rgba($color: #000000, $alpha: 0.8);
+	}
+	// 现在的样式
+	.video-header {
+		// width: 100%;
+		height: 30px;
+		padding: 0 10px;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		opacity: 0.8;
+		// margin-bottom: 100%;
+		// margin-left: 15px;
+		// border-radius: 50%;
+		background-color: rgba($color: #000000, $alpha: 0.1);
+	}
+	.fullScreen-header {
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		height: 50px;
+	}
+	.video-footer {
+		height: 45px;
+		position: absolute;
+		bottom: 0;
+		flex-direction: row;
+		justify-content: center;
+		background-color: rgba($color: #000000, $alpha: 0.4);
+	}
+</style>
